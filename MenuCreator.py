@@ -6,11 +6,10 @@ import telebot
 from tbot import current_time
 
 
-class Menu():
+class MenuFromCall():
     
     def __init__(self, bot, call, info, wanted_page):
         self.bot: Any = bot
-        self.call: Any = call
         self.chat_id: int = call.message.chat.id
         self.message_id: int = call.message.message_id
         
@@ -25,6 +24,7 @@ class Menu():
         self.parent = info.parent
         self.callbacks = info.callbacks
         self.names = info.names
+        self.back_page = info.page
         
         
     
@@ -63,20 +63,21 @@ class Menu():
         left = telebot.types.InlineKeyboardButton(text='⬅️ Предыдущая страница ⬅️', callback_data=f'{shablon}``{self.page - 1}')
         right = telebot.types.InlineKeyboardButton(text='➡️ Следующая страница ➡️', callback_data=f'{shablon}``{self.page + 1}')
         begining = telebot.types.InlineKeyboardButton(text='🔄 В начало 🔄', callback_data=f'{shablon}``{min_page}')
+        if max_page > 1:
+            if self.page == min_page:
 
-        if self.page == min_page:
+                menu_buttons_pages_generated.append(right)    
+            elif self.page == max_page:
+                
+                menu_buttons_pages_generated.append(left)
+                menu_buttons_pages_generated.append(begining)
+            else:
+                menu_buttons_pages_generated.append(right)
+                menu_buttons_pages_generated.append(left)
+                
+            menu_buttons_pages_generated.append(telebot.types.InlineKeyboardButton(text='🔙 Назад 🔙', callback_data=f'{self.parent}``{self.page}'))            
+            menu_buttons_pages_generated.append(telebot.types.InlineKeyboardButton(text='📱 В меню 📱', callback_data='aaa``1'))
 
-            menu_buttons_pages_generated.append(right)    
-        elif self.page == max_page:
-            
-            menu_buttons_pages_generated.append(left)
-            menu_buttons_pages_generated.append(begining)
-        else:
-            menu_buttons_pages_generated.append(right)
-            menu_buttons_pages_generated.append(left)
-            
-                    
-        menu_buttons_pages_generated.append(telebot.types.InlineKeyboardButton(text='📱 В меню 📱', callback_data='aaa``1'))
         return menu_buttons_pages_generated
 
     def create_pages(self, min_page: int, max_page: int, menu_page: list) -> tuple:
@@ -88,13 +89,18 @@ class Menu():
         Возвращает список кнопок для страницы с определенным номером, который определяется благодаря числу элементов.
         Так что страницы по сути генерируются сами, просто добавьте больше кнопок в список и страницы сами появятся
         """
-        shablon = self.info.callback
+        
         
         menu_buttons_pages_generated: list = [v for i,v in enumerate(menu_page[self.page-1]) if i <= 5]
-        menu_buttons_pages_generated: tuple = self.control_buttons(menu_buttons_pages_generated, min_page, max_page, shablon)
+        
             
         return menu_buttons_pages_generated
 
+    def get_navigation_buttons(self, navigation_buttons: list, min_page: int, max_page: int):
+        shablon = self.info.callback
+        menu_buttons_pages_generated: tuple = self.control_buttons(menu_buttons_pages_generated, min_page, max_page, shablon)
+        return
+    
     def add_buttons_to_keyboard(self, menu_buttons_pages_generated: list, next_menu: Any):
 
         """
@@ -102,6 +108,8 @@ class Menu():
 
         """
         
+        #navigation = get_navigation_buttons(list() , min_page: int, max_page: int)
+
         for i in menu_buttons_pages_generated:
             
             next_menu.add(i)
@@ -146,4 +154,34 @@ class Menu():
                               self.message_id,
                               reply_markup=menu)
         
-    
+class MenuFromMessage(MenuFromCall):
+    def __init__(self, bot, info, message, wanted_page):
+        self.bot: Any = bot
+        self.chat_id: int = message.chat.id
+        self.message_id: int = message.message_id
+        
+        self.number_in_sqare: tuple = ('1️⃣', '2️⃣', '3️⃣', '4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟')
+        
+        
+        self.generated_buttons: list = list()
+        self.next_menu: Any = telebot.types.InlineKeyboardMarkup(row_width=1)
+        self.page: int = int(wanted_page)
+        
+        self.info = info
+        self.parent = info.parent
+        self.callbacks = info.callbacks
+        self.names = info.names
+
+    def bot_menu_pager(self) -> NoReturn:
+        """
+        Функция создает страницу из кнопок в сообщении
+        """
+        
+
+        text = self.info.text
+
+        menu = self.pager()
+        
+        self.bot.send_message(self.chat_id,
+                              f'{text}\nСтраница номер: {self.number_in_sqare[self.page-1]}',
+                              reply_markup=menu)

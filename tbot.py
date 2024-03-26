@@ -27,13 +27,17 @@ class info():
         
         self.callback = callback
 
+        
         self.parent: str = data[callback]['Parent']
         self.text: str = data[callback]['Text']
         self.buttons: Any = data[callback]['Buttons']
         self.urlButtons = data[callback]['urlButtons']
 
-        self.callbacks = tuple(data[callback]['Buttons'].keys()) if self.buttons is not None else None
-        self.names = tuple(data[callback]['Buttons'].values()) if self.buttons is not None else None
+        self.callbacks = tuple(self.buttons.keys()) if self.buttons is not None else None
+        self.names = tuple(self.buttons.values()) if self.buttons is not None else None
+
+        self.urls = tuple(self.urlButtons.keys()) if self.urlButtons is not None else None
+        self.url_text = tuple(self.urlButtons.values()) if self.urlButtons is not None else None
 
         self.number = list(data[self.parent]['Buttons'].keys()).index(callback) if self.parent != None else 0
         self.page = math.ceil((self.number+1)/6)
