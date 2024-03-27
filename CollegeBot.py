@@ -34,19 +34,28 @@ def start(message) -> NoReturn:
 def menu(call):
     
     call_data: str = call.data
-    if '``' in call_data:
-        wanted_page = (call_data.split('``'))[-1]
-        call_data = (call_data.split('``'))[0]
     print(call_data)
+    if call_data == 'None': 
+        return
+    elif '``' in call_data:
+        call_data, wanted_page = call_data.split('``')
+    
+
+    
     all_info = info(call_data)
     
     if all_info.buttons != None:
-        menu = MenuFromCall(bot, call, all_info, wanted_page)
-        menu.bot_menu_pager()
+        menublabla = MenuFromCall(bot, call, all_info, wanted_page)
+        
+        menublabla.bot_menu_pager()
+        
     else:
         section = SectionChooser(bot, call, all_info)
         section.section_selector()
+        
 
+    
+    
 
 
 bot.polling(none_stop=True)
