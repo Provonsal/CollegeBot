@@ -1,7 +1,9 @@
+# coding=utf-8 
+
 from typing import Any, NoReturn
 from telebot import TeleBot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-from tbot import Info
+from Info import Info
 
 class SectionChooser():
 
