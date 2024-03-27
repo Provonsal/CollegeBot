@@ -4,7 +4,7 @@ from typing import NoReturn
 from SectionChooser import SectionChooser
 from MenuCreator import MenuFromCall, MenuFromMessage
 from tbot import bot
-from tbot import Info
+from Info import Info
 
 
 
