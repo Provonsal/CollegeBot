@@ -34,7 +34,7 @@ class Info():
 
     def __init__(self, callback: str):
 
-        with open('settings.json', 'r') as file:
+        with open('settings/settings.json', 'r') as file:
             data = json.load(file)
         
         self.callback: str = callback
