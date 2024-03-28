@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+address = os.getenv("ADDRESS")
+password, password2 = os.getenv("PASSWORD"), os.getenv("PASSWORD2")
 bot = telebot.TeleBot(os.getenv("TOKEN"))
 
 def current_time():

@@ -79,7 +79,7 @@ class SectionChooser():
         
         navigation_buttons: tuple = (
                                     InlineKeyboardButton('🔙 Назад 🔙', callback_data=call_back_data),
-                                    InlineKeyboardButton(text='📱 В меню 📱', callback_data='aaa``1')
+                                    InlineKeyboardButton('📱 В меню 📱', callback_data='aaa``1')
                                      )
         return navigation_buttons
 

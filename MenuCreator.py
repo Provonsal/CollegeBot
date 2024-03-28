@@ -254,9 +254,8 @@ class MenuFromMessage(MenuFromCall):
         text: str = f'{self.info.text}\nСтраница номер: {self.number_in_sqare[self.page-1]}' if self.max_page > 1 else self.info.text
 
         
-        self.bot.edit_message_text(
-                                text,
-                                self.chat_id,
-                                self.message_id,
-                                reply_markup=menu
-                                )
+        self.bot.send_message(
+                            self.chat_id,
+                            text,
+                            reply_markup=menu
+                            )
