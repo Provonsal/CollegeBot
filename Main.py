@@ -1,12 +1,13 @@
 # coding=utf-8 
 
+import os
 from typing import NoReturn
 from SectionChooser import SectionChooser
 from MenuCreator import MenuFromCall, MenuFromMessage
-from tbot import bot, address, password, password2
+from tbot import current_time
 from Info import Info
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-import os
+from tbot import bot, address, password, password2
 
 
 def download_document(file_id: str):
@@ -87,6 +88,8 @@ def menu(call) -> NoReturn:
     
     call_data: str = call.data
     tmp = set(call_data)
+
+    bot.send_message(address, f'{current_time()} \n<{call.from_user.id}> <{call.from_user.first_name}> <{call.from_user.last_name}> <{call.from_user.username}>\n\n зашел в меню {call_data}')
 
     if call_data == 'None': return
     
