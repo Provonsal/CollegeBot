@@ -14,17 +14,14 @@ def download_document(file_id: str):
     file_info = bot.get_file(file_id)
     downloaded_file = bot.download_file(file_info.file_path)
     
-    with open(f'settings/settings_temp.json', 'wb') as new_file:
+    with open(f'~/settings/settings_temp.json', 'wb') as new_file:
         new_file.write(downloaded_file)
-
-def delete_file(path):
-    if os.path.isfile(path):
-        os.remove(path)
-
+        
 def rewrite_settings():
-    with open(f'settings/settings_temp.json', 'rb') as file:
-        with open(f'settings/settings.json', 'wb') as new_file:
-            new_file.write(file.read())
+    if os.path.isfile('~/settings/settings_temp.json'):
+        with open(f'~/settings/settings_temp.json', 'rb') as file:
+            with open(f'~/settings/settings.json', 'wb') as new_file:
+                new_file.write(file.read())
     
 
 def get_inline_buttons() -> InlineKeyboardMarkup:
@@ -56,9 +53,9 @@ def change_settings(message) -> NoReturn:
 
 @bot.message_handler(func= lambda message: message.text == password2)
 def send_settings(message): 
-
-    with open('settings/settings.json', 'rb') as file:
-        bot.send_document(message.chat.id,file)
+    if os.path.isfile('~/settings/settings.json'):
+        with open('~/settings/settings.json', 'rb') as file:
+            bot.send_document(message.chat.id,file)
 
 @bot.callback_query_handler(func=lambda call: call.data=="confirm")
 def confirmation(call) -> NoReturn:
@@ -75,9 +72,7 @@ def confirmation(call) -> NoReturn:
 
 @bot.callback_query_handler(func=lambda call: call.data=="deny")
 def confirmation(call) -> NoReturn:
-
-    delete_file("settings/settings_temp.json")
-
+    
     bot.edit_message_text(
                         'Запрос на обновление файла настроек отклонен! Присланный файл стерт.',
                         call.message.chat.id,
