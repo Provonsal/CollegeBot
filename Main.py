@@ -25,6 +25,7 @@ def rewrite_settings():
     with open(f'settings/settings_temp.json', 'rb') as file:
         with open(f'settings/settings.json', 'wb') as new_file:
             new_file.write(file.read())
+    
 
 def get_inline_buttons() -> InlineKeyboardMarkup:
     reply: InlineKeyboardMarkup = InlineKeyboardMarkup(row_width=2)
@@ -64,7 +65,7 @@ def confirmation(call) -> NoReturn:
 
     rewrite_settings()
 
-    delete_file("settings/settings_temp.json")
+    
 
     bot.edit_message_text(
                         'Файл настроек успешно обновлен!',
