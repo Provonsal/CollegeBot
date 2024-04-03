@@ -33,9 +33,11 @@ def change_settings(message) -> NoReturn:
 
 @bot.message_handler(func= lambda message: message.text == password2)
 def send_settings(message): 
-    if os.path.isfile('~/settings/settings.json'):
-        with open('~/settings/settings.json', 'rb') as file:
+    if os.path.isfile('settings/settings.json'):
+        with open('settings/settings.json', 'rb') as file:
             bot.send_document(message.chat.id,file)
+        return
+    print('test')
 
 @bot.callback_query_handler(func=lambda call: call.data=="confirm")
 def confirmation(call) -> NoReturn:
@@ -54,7 +56,7 @@ def confirmation(call) -> NoReturn:
 def denying(call) -> NoReturn:
 
     bot.edit_message_text(
-                        'Запрос на обновление файла настроек отклонен! Присланный файл стерт.',
+                        'Запрос на обновление файла настроек отклонен!',
                         call.message.chat.id,
                         call.message.message_id
                         )
