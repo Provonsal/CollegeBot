@@ -36,15 +36,16 @@ def send_settings(message):
     if os.path.isfile('settings/settings.json'):
         with open('settings/settings.json', 'rb') as file:
             bot.send_document(message.chat.id,file)
-        return
-    print('test')
+
 
 @bot.callback_query_handler(func=lambda call: call.data=="confirm")
 def confirmation(call) -> NoReturn:
 
     manfile = ManipulateFile("settings/settings_temp.json", bot)
 
+
     manfile.rewrite_settings()
+
 
     bot.edit_message_text(
                         'Файл настроек успешно обновлен!',
@@ -53,7 +54,9 @@ def confirmation(call) -> NoReturn:
                         )
 
 @bot.callback_query_handler(func=lambda call: call.data=="deny")
+
 def denying(call) -> NoReturn:
+
 
     bot.edit_message_text(
                         'Запрос на обновление файла настроек отклонен!',
