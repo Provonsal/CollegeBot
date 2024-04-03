@@ -4,34 +4,12 @@ import os
 from typing import NoReturn
 from SectionChooser import SectionChooser
 from MenuCreator import MenuFromCall, MenuFromMessage
-from tbot import current_time
+from ManipulateFile import ManipulateFile
+from tbot import bot, address, password, password2
 from Info import Info
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from tbot import bot, address, password, password2
 
-
-def download_document(file_id: str):
-    file_info = bot.get_file(file_id)
-    downloaded_file = bot.download_file(file_info.file_path)
-    
-    with open(f'~/settings/settings_temp.json', 'wb') as new_file:
-        new_file.write(downloaded_file)
-        
-def rewrite_settings():
-    if os.path.isfile('~/settings/settings_temp.json'):
-        with open(f'~/settings/settings_temp.json', 'rb') as file:
-            with open(f'~/settings/settings.json', 'wb') as new_file:
-                new_file.write(file.read())
-    
-
-def get_inline_buttons() -> InlineKeyboardMarkup:
-    reply: InlineKeyboardMarkup = InlineKeyboardMarkup(row_width=2)
-    options: tuple = (
-                    InlineKeyboardButton('Подтвердить', callback_data='confirm'),
-                    InlineKeyboardButton('Отказать', callback_data='deny')
-                    )
-    reply.add(*options)
-    return reply
 
 @bot.message_handler(commands=['start'])
 def start(message) -> NoReturn:
@@ -45,9 +23,11 @@ def start(message) -> NoReturn:
 @bot.message_handler(content_types=['document'], func= lambda message: message.caption == password)
 def change_settings(message) -> NoReturn:
     
-    download_document(message.document.file_id)
+    manfile = ManipulateFile("settings/settings_temp.json", bot)
+
+    manfile.download_document(message.document.file_id)
     
-    reply: InlineKeyboardMarkup = get_inline_buttons()
+    reply: InlineKeyboardMarkup = manfile.get_inline_buttons()
 
     bot.send_message(address,'Запрос на обновление файла настроек', reply_markup=reply)
 
@@ -60,9 +40,11 @@ def send_settings(message):
 @bot.callback_query_handler(func=lambda call: call.data=="confirm")
 def confirmation(call) -> NoReturn:
 
-    rewrite_settings()
+    manfile = ManipulateFile("settings/settings_temp.json", bot)
 
-    
+    manfile.rewrite_settings()
+
+    manfile.delete_file()
 
     bot.edit_message_text(
                         'Файл настроек успешно обновлен!',
@@ -72,7 +54,11 @@ def confirmation(call) -> NoReturn:
 
 @bot.callback_query_handler(func=lambda call: call.data=="deny")
 def confirmation(call) -> NoReturn:
-    
+
+    manfile = ManipulateFile("settings/settings_temp.json", bot)
+
+    manfile.delete_file()
+
     bot.edit_message_text(
                         'Запрос на обновление файла настроек отклонен! Присланный файл стерт.',
                         call.message.chat.id,
