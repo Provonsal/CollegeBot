@@ -138,6 +138,9 @@ ENV/
 env.bak/
 venv.bak/
 
+# temp file settings
+settings_temp.json
+
 # Spyder project settings
 .spyderproject
 .spyproject

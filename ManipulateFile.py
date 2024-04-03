@@ -17,12 +17,12 @@ class ManipulateFile():
         if os.path.isfile(self.path):
             os.remove(self.path)
 
-    def rewrite_settings():
+    def rewrite_settings(default = 0):
         with open(f'settings/settings_temp.json', 'rb') as file:
             with open(f'settings/settings.json', 'wb') as new_file:
                 new_file.write(file.read())
 
-    def get_inline_buttons() -> InlineKeyboardMarkup:
+    def get_inline_buttons(default = 0) -> InlineKeyboardMarkup:
         reply: InlineKeyboardMarkup = InlineKeyboardMarkup(row_width=2)
         options: tuple = (
                         InlineKeyboardButton('Подтвердить', callback_data='confirm'),

@@ -5,7 +5,7 @@ from typing import NoReturn
 from SectionChooser import SectionChooser
 from MenuCreator import MenuFromCall, MenuFromMessage
 from ManipulateFile import ManipulateFile
-from tbot import bot, address, password, password2
+from tbot import current_time
 from Info import Info
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from tbot import bot, address, password, password2
@@ -44,8 +44,6 @@ def confirmation(call) -> NoReturn:
 
     manfile.rewrite_settings()
 
-    manfile.delete_file()
-
     bot.edit_message_text(
                         'Файл настроек успешно обновлен!',
                         call.message.chat.id,
@@ -53,11 +51,7 @@ def confirmation(call) -> NoReturn:
                         )
 
 @bot.callback_query_handler(func=lambda call: call.data=="deny")
-def confirmation(call) -> NoReturn:
-
-    manfile = ManipulateFile("settings/settings_temp.json", bot)
-
-    manfile.delete_file()
+def denying(call) -> NoReturn:
 
     bot.edit_message_text(
                         'Запрос на обновление файла настроек отклонен! Присланный файл стерт.',
